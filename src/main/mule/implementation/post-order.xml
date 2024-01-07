@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<sub-flow name="post-order" doc:id="da5127a8-62d8-417e-9393-328c976936d3" >
+		<json-logger:logger doc:name="Logger" doc:id="abfa75bd-15e2-483e-b51f-914ee550528c" config-ref="JSON_Logger_Config" message='#[flow.name ++ " started"]'/>
+		<ee:transform doc:name="Set order input" doc:id="f80d587f-f625-496e-a8fc-08081cef099d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	  poNumber__c: payload.poNumber,
+	  currencyCode__c: payload.currencyCode,
+	  signatureRequiredFlag__c: payload.signatureRequiredFlag,
+	  shipInstructions__c: payload.shipInstructions,
+	  giftWrapFlag__c: payload.giftWrapFlag,
+	  giftWrapMessage__c: payload.giftWrapMessage,
+	  subTotal__c: payload.subTotal,
+	  email__c: payload.email,
+	  Customer__c: payload.customerID
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create doc:name="POST : /order" doc:id="5e690472-b379-46d1-8f3d-5c95e80c4db6" config-ref="Salesforce_Config" type="order__c"/>
+		<ee:transform doc:name="Set order output">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[201]]></ee:set-variable>
+			</ee:variables>
+        
+</ee:transform>
+		<json-logger:logger doc:name="Logger" doc:id="891caefc-16b6-44c9-a755-26e8af9b6c86" config-ref="JSON_Logger_Config" message='#[flow.name ++ " ended"]'/>
+	</sub-flow>
+</mule>

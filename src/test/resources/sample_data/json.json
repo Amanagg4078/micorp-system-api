@@ -1,0 +1,12 @@
+{
+  "firstName": "Alejandra",
+  "lastName": "Smitheram",
+  "phoneNumber": "(361)-259-4879",
+  "email": "Alyssa.Allain@gmail.com",
+  "address": {
+    "address1": "Golden Gate Ave 75",
+    "city": "Paris",
+    "zipCode": "19318",
+    "country": "Denmark"
+  }
+}

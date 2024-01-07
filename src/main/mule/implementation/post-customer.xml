@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<sub-flow name="post-customer" doc:id="828093b1-542d-4a72-b2a7-f818d11bfdb2" >
+		<json-logger:logger doc:name="Logger" doc:id="74da3718-b931-4fea-8a04-afd6efca6234" config-ref="JSON_Logger_Config" message='#[flow.name ++ " started"]'/>
+		<ee:transform doc:name="Set customer input" doc:id="b1db3ede-79af-436d-8ff5-036368d07259" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	firstName__c: payload.firstName,
+	lastName__c: payload.lastName,
+	phoneNumber__c: payload.phoneNumber as Number,
+	email__c: payload.email,
+	address__c: "$(payload.address.address1) $(payload.address.city) $(payload.address.country) $(payload.address.zipCode)"
+}]
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create doc:id="83759e9e-bd11-45e6-a1a5-f2e962aabe7f" config-ref="Salesforce_Config" type="Customer__c" doc:name="POST : /customer"/>
+		<ee:transform doc:name="Set customer output">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[201]]></ee:set-variable>
+			</ee:variables>
+        
+</ee:transform>
+		<json-logger:logger doc:name="Logger" doc:id="11b4f940-8707-4f9f-80df-b45b41ef6ed2" config-ref="JSON_Logger_Config" message='#[flow.name ++ " ended"]'/>
+	</sub-flow>
+</mule>

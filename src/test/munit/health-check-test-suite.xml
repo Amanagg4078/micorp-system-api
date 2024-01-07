@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="health-check-test-suite.xml" />
+	<munit:test name="health-check-test-suite-health-checkTest" doc:id="5f07a0a7-8b22-44a1-89d5-61a823ce08f5" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to health-check" doc:id="e3d05843-8c1e-4738-ac2c-a0cc9fe2c1a4" name="get:\healthCheck:micorp-syst-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="c01d3848-b562-4906-9f16-9572982072ad" >
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import health_check::health_check_response
+---
+health_check_response::main({payload: payload,attributes: attributes,vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

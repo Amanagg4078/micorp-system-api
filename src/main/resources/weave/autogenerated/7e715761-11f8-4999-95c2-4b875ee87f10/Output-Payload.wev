@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_7e715761_11f8_4999_95c2_4b875ee87f10_Output_Payload = Array<{  quantity: Number,   size: String,   orderID: String,   id: String,   category: String,   _?: Any}>
+

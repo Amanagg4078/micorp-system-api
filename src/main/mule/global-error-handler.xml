@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:module-error-handler-plugin="http://www.mulesoft.org/schema/mule/module-error-handler-plugin" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/module-error-handler-plugin http://www.mulesoft.org/schema/mule/module-error-handler-plugin/current/mule-module-error-handler-plugin.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<error-handler name="global-error-handler">
+            
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="7087dcf4-a3e7-4f84-916e-72dd0fe82896" >
+			<module-error-handler-plugin:process-error doc:name="Process Error" doc:id="f881de2c-cfeb-46e1-860e-32b50da3ecc0" />
+		<set-variable value="#[attributes.httpStatus]" doc:name="Set Variable" doc:id="3bc45284-01dd-4d58-8fc1-d959e95148ab" variableName="httpStatus"/>
+			<json-logger:logger doc:name="Logger" doc:id="28c17015-8487-4e3f-bb4e-b8c97b362cd4" config-ref="JSON_Logger_Config" message="Error log">
+				<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+{
+    payload: JSONLoggerModule::stringifyNonJSON(payload),
+    code: attributes.httpStatus, 
+    message: attributes.errorLog 
+}]]]></json-logger:content>
+			</json-logger:logger>
+		
+</on-error-continue>
+        
+</error-handler></mule>

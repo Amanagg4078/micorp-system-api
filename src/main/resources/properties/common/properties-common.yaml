@@ -1,0 +1,8 @@
+http:
+  port: "8081"
+
+json:
+  logger:
+    application:
+      name: micorp-process-api
+      version: 1.0.0

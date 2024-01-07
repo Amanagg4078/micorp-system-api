@@ -1,0 +1,31 @@
+{
+  "headers": {
+    "clientid": "d9aad78b674a431898a038855acfce5e",
+    "x-correlation-id": "",
+    "clientsecret": "3b203805cB2c446481AdA9dcb6f7F6B3",
+    "content-type": "application/json",
+    "user-agent": "PostmanRuntime/7.36.0",
+    "accept": "*/*",
+    "postman-token": "4cb6add9-d0ec-4b49-9f73-2a8fbce45703",
+    "host": "localhost:8081",
+    "accept-encoding": "gzip, deflate, br",
+    "connection": "keep-alive",
+    "content-length": "248"
+  },
+  "clientCertificate": null,
+  "method": "POST",
+  "scheme": "http",
+  "queryParams": {},
+  "requestUri": "/micorp/customer",
+  "queryString": "",
+  "version": "HTTP/1.1",
+  "maskedRequestPath": "/customer",
+  "listenerPath": "/micorp/*",
+  "relativePath": "/customer",
+  "localAddress": "/127.0.0.1:8081",
+  "uriParams": {},
+  "rawRequestUri": "/micorp/customer",
+  "rawRequestPath": "/micorp/customer",
+  "remoteAddress": "/127.0.0.1:54036",
+  "requestPath": "/micorp/customer"
+}

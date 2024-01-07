@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<sub-flow name="get-customer" doc:id="54812b95-5d9f-450c-a6d4-f8a606c21267" >
+		<json-logger:logger doc:name="Logger" doc:id="314f1c29-4224-4811-b333-cf1991b49165" config-ref="JSON_Logger_Config"  message='#[flow.name ++ " started"]'/>
+		<set-variable value="#[attributes.uriParams.'email' as String]" doc:name="Set email" doc:id="09b70e4e-58fc-479e-82a7-f39e448d3c73" variableName="email"/>
+		<salesforce:query doc:name="GET : /customer" doc:id="f83e5bf4-5461-4e64-82e7-5790c929a290" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query ><![CDATA[select Id,firstName__c,lastName__c,phoneNumber__c,email__c,address__c from Customer__c where email__c = ':email']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[{
+	email : vars.email
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Set Output" doc:id="47b3bc0c-9be9-4803-911a-eb70556ebd4c">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<json-logger:logger doc:name="Logger" doc:id="692399f9-a2ee-4e51-a73d-eb2458b10132" config-ref="JSON_Logger_Config" message='#[flow.name ++ " ended"]'/>
+	</sub-flow>
+</mule>

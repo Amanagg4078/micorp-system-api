@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<flow name="micorp-syst-api-main" doc:id="34969107-5999-45b7-86a9-ef6f8cfbedcf">
+        <http:listener config-ref="micorp-syst-api-httpListenerConfig" path="/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+		<ee:transform doc:name="Headers in variables" doc:id="30ef1bcd-0150-4fd4-84ce-7a4ed103ee69" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="correlationID" ><![CDATA[attributes.headers."x-correlation-id" default uuid()]]></ee:set-variable>
+				<ee:set-variable variableName="clientID" ><![CDATA[attributes.headers.'clientID']]></ee:set-variable>
+				<ee:set-variable variableName="clientSecret" ><![CDATA[attributes.headers.'clientSecret']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<apikit:router config-ref="micorp-syst-api-config" doc:id="04b5dd87-e788-4eb7-822c-b5905e7b4957"/>
+        
+    </flow>
+    <flow name="get:\healthCheck:micorp-syst-api-config" doc:id="41483012-fea7-4282-a139-981317ebc641">
+		<json-logger:logger doc:name="Logger" doc:id="b8551942-6e1d-4f62-badd-aca130fdf0bc" config-ref="JSON_Logger_Config" message='#[flow.name ++ " started"]'/>
+		<flow-ref doc:name="health-check" doc:id="370a2f44-063f-49d2-a332-c201e9b44e05" name="health-check"/>
+		<json-logger:logger doc:name="Logger" doc:id="4d4685e6-bf6e-4100-bd97-37b8dbf15531" message='#[flow.name ++ " ended"]' config-ref="JSON_Logger_Config"/>
+    </flow>
+    <flow name="get:\customer\(email):micorp-syst-api-config" doc:id="20ad9144-2fc6-4e1a-8982-8f9bea8f2c5a">
+    
+		<json-logger:logger doc:name="Logger" doc:id="9305c04e-73c5-406d-8f7c-e7d0046c8456"  message='#[flow.name ++ " started"]' config-ref="JSON_Logger_Config"/>
+		<flow-ref doc:name="get-customer" doc:id="5ac574f0-cc90-4efb-bb1a-96d8d2be4fa8" name="get-customer"/>
+    		<json-logger:logger doc:name="Logger" doc:id="e3477f50-02e4-491c-9f21-d4e4febbaee8" message='#[flow.name ++ " ended"]' config-ref="JSON_Logger_Config"/>
+    
+    </flow>
+    <flow name="post:\customer:application\json:micorp-syst-api-config" doc:id="bb4013c1-0c1a-4b75-9b88-b8c9abadda01">
+    
+		<json-logger:logger doc:name="Logger" doc:id="c4c406c3-705b-414a-a4a3-80975dced478"  message='#[flow.name ++ " started"]' config-ref="JSON_Logger_Config"/>
+		<flow-ref doc:name="post-customer" doc:id="0e5e40ff-9fb1-4e8e-b606-dc3702ccd13f" name="post-customer"/>
+    		<json-logger:logger doc:name="Logger" doc:id="8b8ae6ec-9774-4b1d-99fe-d9c49bc91435" message='#[flow.name ++ " ended"]' config-ref="JSON_Logger_Config"/>
+    
+    </flow>
+    <flow name="post:\items:application\json:micorp-syst-api-config" doc:id="7e715761-11f8-4999-95c2-4b875ee87f10">
+    
+		<json-logger:logger doc:name="Logger" doc:id="38836874-9308-4d34-9e0a-bfc23a15fb3d"  message='#[flow.name ++ " started"]' config-ref="JSON_Logger_Config"/>
+		<flow-ref doc:name="post-items" doc:id="cb2541e6-1259-4c8f-b3b7-ec16195d1eef" name="post-items"/>
+    		<json-logger:logger doc:name="Logger" doc:id="8fd41535-861c-4b0d-bf70-0180442bcfe7" message='#[flow.name ++ " ended"]' config-ref="JSON_Logger_Config"/>
+    
+    </flow>
+    <flow name="post:\order:application\json:micorp-syst-api-config" doc:id="dd9ff709-4e8e-4f61-85b2-4a68fdb2d2cc">
+    
+		<json-logger:logger doc:name="Logger" doc:id="47eef7b8-787b-49ba-8cfa-1c82ebb7e695"  message='#[flow.name ++ " started"]' config-ref="JSON_Logger_Config"/>
+		<flow-ref doc:name="post-order" doc:id="fc95ed55-83f6-4d12-b3cb-f43f23c1e21f" name="post-order"/>
+   		<json-logger:logger doc:name="Logger" doc:id="414c6f95-f6ac-40cf-83b1-746fc0810d95" message='#[flow.name ++ " ended"]' config-ref="JSON_Logger_Config"/>
+   
+    </flow>
+</mule>
